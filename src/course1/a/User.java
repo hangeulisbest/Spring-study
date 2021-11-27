@@ -2,6 +2,9 @@ package course1.a;
 
 import java.sql.SQLException;
 
+/**
+ *  User 클래스
+ */
 public class User {
     String id;
     String name;
