@@ -3,7 +3,7 @@
 1. **[ course1/a ]**  초난감 DAO
 > UserDao, User    
 2. **[ course1/b ]**  DAO 분리
-> UserDao2 , NUserDao2 (팩토리 메서드 패턴)  
+> UserDao2 , NUserDao2 (팩토리 메서드 패턴 -> 따로정리)  
 3. **[ course1/c ]**  DAO 확장
 > 관계설정책임의 분리
 4. **[ course1/d ]**  IoC(제어의 역전)
