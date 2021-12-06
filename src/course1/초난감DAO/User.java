@@ -1,6 +1,4 @@
-package course1.a;
-
-import java.sql.SQLException;
+package course1.초난감DAO;
 
 /**
  *  User 클래스

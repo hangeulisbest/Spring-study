@@ -1,18 +1,17 @@
-package course1.a;
+package course1.초난감DAO;
 
 import java.sql.*;
 
 /**
- * 초난감 DAO
+ *  1.2 UserDao 를 추상메서드로 변환하고 Connection 관심사를 분리함
  */
-public class UserDao {
+public abstract class UserDao2 {
     public void add(User user) throws ClassNotFoundException, SQLException {
         // Class.forName 은 드라이브를 로드하기위해 사용했지만 자동등록되서 필요 없음
-        Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/test"
-                , "root"
-                , "root1234");
+        Connection c = getConnection();
+
         PreparedStatement ps = c.prepareStatement(
-          "INSERT INTO USER(ID , NAME , PASSWORD) VALUES(?,?,?)"
+                "INSERT INTO USER(ID , NAME , PASSWORD) VALUES(?,?,?)"
         );
         ps.setString(1,user.getId());
         ps.setString(2,user.getName());
@@ -25,9 +24,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException , SQLException {
-        Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/test"
-                , "root"
-                , "root1234");
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement("SELECT * FROM USER WHERE ID = ?");
         ps.setString(1,id);
@@ -43,6 +40,18 @@ public class UserDao {
 
         return user;
     }
+
+    protected void hookMethod(){
+        System.out.println("PROTECED 는 선택적으로 구현 할수 있다!");
+    };
+
+    /**
+     * 서브 클래스에서 반드시 구현해야함 !
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException  {
         UserDao dao = new UserDao();

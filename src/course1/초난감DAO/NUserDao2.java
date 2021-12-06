@@ -1,4 +1,4 @@
-package course1.a;
+package course1.초난감DAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
