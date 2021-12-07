@@ -1,12 +1,11 @@
 package com.springstudy.demo.ch1.IoC;
 
-import course1.관계설정책임분리.ConnectionMaker;
-import course1.초난감DAO.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 
 public class UserDao {
     private ConnectionMaker connectionMaker;
