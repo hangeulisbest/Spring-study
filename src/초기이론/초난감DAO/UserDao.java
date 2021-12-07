@@ -12,11 +12,11 @@ public class UserDao {
                 , "root"
                 , "root1234");
         PreparedStatement ps = c.prepareStatement(
-          "INSERT INTO USER(ID , NAME , PASSWORD) VALUES(?,?,?)"
+                "INSERT INTO USER(ID , NAME , PASSWORD) VALUES(?,?,?)"
         );
-        ps.setString(1,user.getId());
-        ps.setString(2,user.getName());
-        ps.setString(3,user.getPassword());
+        ps.setString(1, user.getId());
+        ps.setString(2, user.getName());
+        ps.setString(3, user.getPassword());
 
         ps.executeUpdate();
 
@@ -24,13 +24,13 @@ public class UserDao {
         c.close();
     }
 
-    public User get(String id) throws ClassNotFoundException , SQLException {
+    public User get(String id) throws ClassNotFoundException, SQLException {
         Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/test"
                 , "root"
                 , "root1234");
 
         PreparedStatement ps = c.prepareStatement("SELECT * FROM USER WHERE ID = ?");
-        ps.setString(1,id);
+        ps.setString(1, id);
         ResultSet rs = ps.executeQuery();
         rs.next();
         User user = new User();
@@ -44,7 +44,7 @@ public class UserDao {
         return user;
     }
 
-    public static void main(String[] args) throws ClassNotFoundException, SQLException  {
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
         UserDao dao = new UserDao();
 
         User user = new User();

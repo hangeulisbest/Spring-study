@@ -13,17 +13,18 @@ public class UserDao {
     /**
      * this.connectionMaker = new DConnectionMaker() 와 다르게 의존관계에서 벗어남 -> 결합도를 낮추는 것이 중요함
      * 전략 패턴
+     *
      * @param connectionMaker
      */
-    public UserDao(ConnectionMaker connectionMaker){
+    public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
     }
 
-    public User get(String id) throws ClassNotFoundException , SQLException {
+    public User get(String id) throws ClassNotFoundException, SQLException {
         Connection c = connectionMaker.makeConnection();
 
         PreparedStatement ps = c.prepareStatement("SELECT * FROM USER WHERE ID = ?");
-        ps.setString(1,id);
+        ps.setString(1, id);
         ResultSet rs = ps.executeQuery();
         rs.next();
         User user = new User();

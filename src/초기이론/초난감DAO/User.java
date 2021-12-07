@@ -1,7 +1,7 @@
 package course1.초난감DAO;
 
 /**
- *  User 클래스
+ * User 클래스
  */
 public class User {
     String id;

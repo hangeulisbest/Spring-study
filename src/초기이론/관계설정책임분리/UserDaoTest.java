@@ -5,6 +5,7 @@ import java.sql.SQLException;
 public class UserDaoTest {
     /**
      * UserDao는 ConnectionMaker가 누군지 신경안써도 됨!
+     *
      * @param args
      * @throws ClassNotFoundException
      * @throws SQLException
