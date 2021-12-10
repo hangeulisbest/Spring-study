@@ -63,6 +63,8 @@ DaoFactory를 통해 얻을 수 있는 장점은 UserDao가 어떤 DB연결을 �
 변하지 않는다. 컴포넌트와 설계도 역할을 하는 팩토리를 구분함으로써 책임과 관심을 분리한다.
 ```
 
+[**DaoFactoryTest 소스코드로 가기**](../../../../../../../test/java/com/springstudy/demo/ch1/IoC/DaoFactoryTest.java)
+
 #### 8. 고전적인 싱글톤 패턴의 한계
 ```java
 public class UserDao{  
