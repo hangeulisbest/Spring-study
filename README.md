@@ -18,3 +18,8 @@
 |14장|AOP와 LTW|
 |15장|테스트 컨텍스트 프레임워크|
 |16장|스프링의 기타 기술과 효과적인 학습방법|
+
+## 부록
+|주제|
+|:---|
+|[슈퍼타입토큰(SuperTypeToken)](./src/src/main/java/com/springstudy/demo/superTypeToken)|
