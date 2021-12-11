@@ -32,6 +32,12 @@ class SimpleTypeSafeMapTest {
 
         simpleTypeSafeMap.put(List.class, Arrays.asList("1", "2", "3"));
         List<Integer> vv2 = (List<Integer>)simpleTypeSafeMap.get(List.class);
+
+        // 문자열 리스트를 List<Integer>로 캐스팅하면 컴파일 오류가 안남! 런타임도 안남! 그래서 슈퍼타입토큰 생김
+        List<Integer> temp =  List.class.cast(Arrays.asList("1","2","3"));
+        assertFalse(temp.get(0) instanceof Integer);
+
+
         assertEquals(vv2.get(0),"1");
 
 

@@ -18,6 +18,10 @@ public class SimpleTypeSafeMap {
         return k.cast(map.get(k));
     }
 
+    public int keySize(){
+        return map.keySet().size();
+    }
+
     public <T> boolean containsKey(Class<T> k){
         return map.containsKey(k);
     }

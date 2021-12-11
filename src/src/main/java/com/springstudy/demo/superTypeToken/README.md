@@ -57,6 +57,6 @@ void myMethod(Class<?> clazz) {
 // String.class라는 클래스 리터럴을 타입 토큰 파라미터로 myMethod에 전달합니다.
 myMethod(String.class);
 ```
-##### ㄴ 슈퍼타입토큰이 필요한 이유
-- [SimpleTypeSafeMapTest](../../../../../../test/java/com/springstudy/demo/superTypeToken/SimpleTypeSafeMapTest.java)
 
+##### 슈퍼타입토큰이 필요한 이유
+- [SimpleTypeSafeMapTest](../../../../../../test/java/com/springstudy/demo/superTypeToken/SimpleTypeSafeMapTest.java)
