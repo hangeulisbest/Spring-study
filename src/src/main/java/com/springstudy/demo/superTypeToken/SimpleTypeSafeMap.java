@@ -1,5 +1,7 @@
 package com.springstudy.demo.superTypeToken;
 
+import org.springframework.web.bind.annotation.GetMapping;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +23,7 @@ public class SimpleTypeSafeMap {
     public int keySize(){
         return map.keySet().size();
     }
+
 
     public <T> boolean containsKey(Class<T> k){
         return map.containsKey(k);
