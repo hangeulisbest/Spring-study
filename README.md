@@ -23,3 +23,4 @@
 |주제|
 |:---|
 |[슈퍼타입토큰(SuperTypeToken)](./src/src/main/java/com/springstudy/demo/superTypeToken)|
+|[커스텀 어노테이션(Custom Annotation)](./src/src/main/java/com/springstudy/demo/annotation)|
