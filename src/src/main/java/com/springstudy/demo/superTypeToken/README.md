@@ -119,7 +119,7 @@ class SimpleTypeSafeMapTest {
 - [SimpleTypeSafeMapTest 소스코드 전체보기](../../../../../../test/java/com/springstudy/demo/superTypeToken/SimpleTypeSafeMapTest.java)
 
 String.class 와 Integer.class에 대해서는 잘 동작합니다. <br>
-하지만 List<String> 과 List<Integer> 에 대해서는 동작하지 않습니다. <br>
+하지만 List\<String\> 과 List\<Integer\> 에 대해서는 동작하지 않습니다. <br>
 아래의 코드를 보면서 설명하겠습니다.
 
 ```java
@@ -148,7 +148,7 @@ class SimpleTypeSafeMapTest {
 }
 ```
 
-List<Integer> 와 List<String>은 List<String>.class 와 List<Integer>.class <br>
+List\<Integer\> 와 List\<String\>은 List\<String\>.class 와 List\<Integer\>.class <br>
 와 같은 클래스 리터럴이 존재하지 않습니다. 그래서 타입이레이저를 통해 타입토큰을 사용할수 없습니다.
 
 #### Super Type Token 이란?
@@ -156,9 +156,9 @@ List<Integer> 와 List<String>은 List<String>.class 와 List<Integer>.class <br
 수퍼급의 타입토큰이 아니라 수퍼타입의 토큰을 사용하겠다는 의미입니다. <br>
 수퍼 타입 토큰은 **상속**과 **reflection**을 사용하여 List<String>.class 와 같이 사용하는것과 같은 원래 사용할 수 없었던 클래스 리터럴을 타입토큰으로 사용하는것과 같은 효과를 냅니다.
 <br> <br>
-String.class의 타입은 Class<String> 입니다. <br>
-Class<String> 타입토큰을 통해 String.class 라는 타입을 받을 수 있도록 하여 타입안정성을 확보했습니다. <br>
-만약에 Class<List<String>> 이라는 토큰을 이용해 List<String>.class 라는 타입을 받을 수 있다면 어떨까요?? <br>
+String.class의 타입은 Class\<String\> 입니다. <br>
+Class\<String\> 타입토큰을 통해 String.class 라는 타입을 받을 수 있도록 하여 타입안정성을 확보했습니다. <br>
+만약에 Class\<List\<String\>\> 이라는 토큰을 이용해 List\<String\>.class 라는 타입을 받을 수 있다면 어떨까요?? <br>
 <br>
 
 그렇다면 List 내에 중첩된 타입은 어떻게 구할 수 있을까요?? <br> <br>
