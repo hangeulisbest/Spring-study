@@ -3,6 +3,7 @@ package com.springstudy.demo.superTypeToken;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.lang.reflect.Type;
 
@@ -65,6 +66,21 @@ class TypeSafeMapTest {
         );
         // List<List<String>>.class와 동일한 효과
         final TypeReference<List<List<String>>> tr= new TypeReference<>() {};
+
+        System.out.println("tr.getType() : " + tr.getType());
+
+        /**
+         * getType 에서 Type 부분 정확하게 이해해보기 --- 과제
+         */
+
+        if(tr.getType() instanceof ParameterizedType){
+            Type t = tr.getType();
+            System.out.println(((ParameterizedType) t).getRawType().getClass());
+            //List<List<String>> ret = clazz.cast(inputData);
+            //System.out.println("ret = " + ret);
+
+
+        }
 
         // put
         map.put(tr, inputData);
