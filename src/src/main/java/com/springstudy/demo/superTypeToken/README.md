@@ -213,6 +213,11 @@ class SimpleTypeSafeMapTest {
 }
 ```
 
+##### SimpleTypeSafeMapTest 소스코드
+
+- [SimpleTypeSafeMapTest](../../../../../../test/java/com/springstudy/demo/superTypeToken/SimpleTypeSafeMapTest.java)
+
+
 이처럼 getGenericSuperClass 는 상위 클래스의 타입을 가져옵니다. <br>
 만약 상위 클래스의 파라미터 타입이 있다면 함께 가져옵니다. (ex. Super\<List\<String\>\>) <br>
 
@@ -275,10 +280,269 @@ typeOfGenericSuperclass 는  ParameterizedType 이므로 캐스팅이 가능합�
 아래와 같은 코드는 에러가 납니다.
 
 ```java
+// typeOfGenericSuperclass2 는 RawType 그 자체라서 ParameterizedType으로 캐스팅할 수 없다.
 Type ClassCastException = ((ParameterizedType) typeOfGenericSuperclass2).getActualTypeArguments()[0];
 ```
 
 다시 돌아와서 상위 클래스의 파라미터 실제 타입을 가져오는데 성공했습니다.
+위 처럼 실제타입을 가져오기 위해서는 상위클래스의 파라미터로 한번 감싼 다음에 가져와야 합니다.
+이를 이용해 타입에 안전한 맵을 만들어 보겠습니다.
+
+```java
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
+public class TypeSafeMap {
+    private final Map<Type,Object> map = new HashMap<>();
+
+    public <T> void put(TypeReference<T> tr,T v){
+        map.put(tr.getType(),v);
+    }
+
+    public <T> T get(TypeReference<T> tr){
+        final Type type = tr.getType();
+        final Class<T> clazz;
+
+        if(type instanceof ParameterizedType){
+            // getRawType 은 제네릭을 모두 제거한 타입을 가져옵니다. 예를 들어 List<String> 이라면 List.class 를 가져옴
+            // 또 예를 들면 List<HashMap<String,String>> 이라도 RawType 은 List.class로 가져옴
+            // 즉, 파라미터로 쓰는 타입의 RAW타입을 가져옵니다.
+            clazz =(Class<T>)((ParameterizedType) type).getRawType();
+        }else{
+            // Class 는 인터페이스 Type 을 구현한 클래스임
+            // 파라미터로 쓰는 타입이 없다면 그냥 캐스팅함
+            clazz = (Class<T>) type;
+        }
+
+        // clazz 는 T 제네릭 파라미터를 가지고 있고
+        // 쉽게 말하면 T.class.cast(T); 로 비슷하게 이해할 수 있다.
+        // 예를 들어 String.class.cast("HELLO");
+        // List.class.cast(Arrays.asList("1","2","3"));
+        return clazz.cast(map.get(tr.getType()));
+
+    }
+}
+
+```
+
+
+이렇게 만든 타입 안전한 맵을 테스트 해봅니다.
+
+```java
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
+import java.lang.reflect.Type;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+class TypeSafeMapTest {
+
+    private final TypeSafeMap map = new TypeSafeMap();
+
+    @Test
+    public void 문자열_타입안정성_테스트(){
+        final String inData = "문자열 테스트";
+        // 추상클래스의 익명의 서브클래스로 인스턴스화
+        final TypeReference<String> tr = new TypeReference<String>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        };
+
+        // put test
+        map.put(tr,inData);
+
+        // get test
+        final String outData = map.get(tr);
+
+        assertEquals(inData,outData);
+
+    }
+
+    @Test
+    public void List_타입안정성_테스트(){
+        final List<String> inData = Arrays.asList("1","2","3");
+
+        final TypeReference<List<String>> tr = new TypeReference<List<String>>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        };
+
+        System.out.println(tr.getType());
+
+        //put
+        map.put(tr,inData);
+
+        //get
+        final List<String> outData = map.get(tr);
+
+        assertEquals(inData,outData);
+    }
+
+    @Test
+    public void put_and_get_test_using_list_list_string() {
+        final List<List<String>> inputData = Arrays.asList(
+                Arrays.asList("H", "O", "N", "G"),
+                Arrays.asList("S", "U", "N", "G"),
+                Arrays.asList("M", "I", "N")
+        );
+        // List<List<String>>.class와 동일한 효과
+        final TypeReference<List<List<String>>> tr= new TypeReference<>() {};
+
+        System.out.println("tr.getType() : " + tr.getType());
+
+        // put
+        map.put(tr, inputData);
+
+        // get
+        final List<List<String>> outputData = map.get(tr);
+
+        System.out.println("input: " + inputData + "\n" +  "output: " +outputData);
+        assertEquals(inputData, outputData);
+    }
+
+}
+```
+
+##### TypeSafeMapTest 소스코드 보기
+- [TypeSafeMapTest](../../../../../../test/java/com/springstudy/demo/superTypeToken/TypeSafeMapTest.java)
 
 
 
+위 처럼 TypeReference\<T\> 를 이용해 T의 타입토큰을 구해보았습니다. <br>
+T의 타입 토큰을 구하기 위해서 상위 클래스인 TypeReference의 타입파라미터인 T를 가져와서 구한것을 다시 말하면 <br>
+슈퍼클래스의 타입토큰을 줄여서 슈퍼타입토큰이라고 합니다. <br>
+위 내용을 스프링에서는 ParameterizedTypeReference 라는 이름으로 구현하고 있는데 아래에 있습니다.<br>
+
+
+```java
+public abstract class ParameterizedTypeReference<T> {
+
+	private final Type type;
+
+
+	protected ParameterizedTypeReference() {
+		Class<?> parameterizedTypeReferenceSubclass = findParameterizedTypeReferenceSubclass(getClass());
+		Type type = parameterizedTypeReferenceSubclass.getGenericSuperclass();
+		Assert.isInstanceOf(ParameterizedType.class, type, "Type must be a parameterized type");
+		ParameterizedType parameterizedType = (ParameterizedType) type;
+		Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+		Assert.isTrue(actualTypeArguments.length == 1, "Number of type arguments must be 1");
+		this.type = actualTypeArguments[0];
+	}
+
+	private ParameterizedTypeReference(Type type) {
+		this.type = type;
+	}
+
+
+	public Type getType() {
+		return this.type;
+	}
+
+	@Override
+	public boolean equals(@Nullable Object other) {
+		return (this == other || (other instanceof ParameterizedTypeReference &&
+				this.type.equals(((ParameterizedTypeReference<?>) other).type)));
+	}
+
+	@Override
+	public int hashCode() {
+		return this.type.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return "ParameterizedTypeReference<" + this.type + ">";
+	}
+
+
+	/**
+	 * Build a {@code ParameterizedTypeReference} wrapping the given type.
+	 * @param type a generic type (possibly obtained via reflection,
+	 * e.g. from {@link java.lang.reflect.Method#getGenericReturnType()})
+	 * @return a corresponding reference which may be passed into
+	 * {@code ParameterizedTypeReference}-accepting methods
+	 * @since 4.3.12
+	 */
+	public static <T> ParameterizedTypeReference<T> forType(Type type) {
+		return new ParameterizedTypeReference<T>(type) {
+		};
+	}
+
+	private static Class<?> findParameterizedTypeReferenceSubclass(Class<?> child) {
+		Class<?> parent = child.getSuperclass();
+		if (Object.class == parent) {
+			throw new IllegalStateException("Expected ParameterizedTypeReference superclass");
+		}
+		else if (ParameterizedTypeReference.class == parent) {
+			return child;
+		}
+		else {
+			return findParameterizedTypeReferenceSubclass(parent);
+		}
+	}
+
+}
+```
+
+위 ParameterizedTypeReference 를 이용해서 어떻게 사용하는지 실습해보겠습니다.
+
+```java
+package com.springstudy.demo.superTypeToken;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static com.springstudy.demo.superTypeToken.ParameterizedTypeReferenceTestController.*;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class ParameterizedTypeReferenceTestControllerTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Test
+    public void 슈퍼타입_없이_호출해보기(){
+        List<TestUser> ret = restTemplate.getForObject("/users", List.class);
+        final Object first = ret.get(0);
+
+        assertFalse(first instanceof TestUser);
+        assertTrue(first instanceof LinkedHashMap);
+        System.out.println(first); // {name=candy, age=10}
+    }
+
+    @Test
+    public void 슈퍼타입으로_호출해보기(){
+        List<TestUser> ret = restTemplate.exchange("/users", HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<TestUser>>() {
+                }
+        ).getBody();
+
+        final Object first = ret.get(0);
+
+        assertTrue(first instanceof TestUser);
+    }
+}
+```
+
+##### ParameterizedTypeReferenceTestControllerTest 소스코드 보기 
+- [ParameterizedTypeReferenceTestControllerTest](../../../../../../test/java/com/springstudy/demo/superTypeToken/ParameterizedTypeReferenceTestControllerTest.java)

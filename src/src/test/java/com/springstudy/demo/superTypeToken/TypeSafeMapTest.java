@@ -69,21 +69,9 @@ class TypeSafeMapTest {
 
         System.out.println("tr.getType() : " + tr.getType());
 
-        /**
-         * getType 에서 Type 부분 정확하게 이해해보기 --- 과제
-         */
-
-        if(tr.getType() instanceof ParameterizedType){
-            Type t = tr.getType();
-            System.out.println(((ParameterizedType) t).getRawType().getClass());
-            //List<List<String>> ret = clazz.cast(inputData);
-            //System.out.println("ret = " + ret);
-
-
-        }
-
         // put
         map.put(tr, inputData);
+
         // get
         final List<List<String>> outputData = map.get(tr);
 
