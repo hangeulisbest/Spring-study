@@ -496,6 +496,42 @@ public abstract class ParameterizedTypeReference<T> {
 ```
 
 위 ParameterizedTypeReference 를 이용해서 어떻게 사용하는지 실습해보겠습니다.
+컨트롤러 클래스를 먼저 만들고 테스트해보겠습니다. 아래는 컨트롤러 입니다.
+```java
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.ToString;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.List;
+
+@RestController
+public class ParameterizedTypeReferenceTestController {
+
+    @GetMapping("/users")
+    public List<TestUser> getUsers(){
+        return Arrays.asList(
+                new TestUser("candy",10)
+                ,new TestUser("dog",2)
+                ,new TestUser("cat",3));
+    }
+
+    @Data
+    @AllArgsConstructor
+    @ToString
+    static class TestUser{
+        private String name;
+        private int age;
+    }
+
+
+}
+
+```
+
+이제 테스트 해보겠습니다.
 
 ```java
 package com.springstudy.demo.superTypeToken;
